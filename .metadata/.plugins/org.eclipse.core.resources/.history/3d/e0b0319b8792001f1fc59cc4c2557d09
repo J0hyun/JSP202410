@@ -1,0 +1,37 @@
+package servlet;
+
+import jakarta.servlet.ServletConfig;
+import jakarta.servlet.ServletContext;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import memberShip.MemberDAO;
+
+import java.io.IOException;
+public class MemberAu extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	
+	MemberDAO dao;
+	
+	@Override
+	public void init() throws ServletException {
+		ServletContext application = this.getServletContext();
+
+		String diver = application.getInitParameter("OracleDriver");
+		String connectUrl = application.getInitParameter("OracleURL");
+		String oId = application.getInitParameter("OracleId");
+		String oPass = application.getInitParameter("OraclePwd");
+	}
+
+	public void destroy() {
+	}
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.getWriter().append("Served at: ").append(request.getContextPath());
+	}
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response);
+	}
+
+}

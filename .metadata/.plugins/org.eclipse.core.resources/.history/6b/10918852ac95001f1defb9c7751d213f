@@ -1,0 +1,50 @@
+package model2.mvcboard;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import utils.JSFunction;
+
+import java.io.IOException;
+
+@WebServlet("/mvcboard/pass.do")
+public class PassController extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	
+	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+//		request.setAttribute("mode", request.getParameter("mode"));
+		
+		request.getRequestDispatcher("/14MVCBoard/Pass.jsp").forward(request, response);
+	}
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		String mode = request.getParameter("mode");
+		String idx = request.getParameter("idx");
+		String pass = request.getParameter("pass");
+		
+		MVCBoardDAO dao = new MVCBoardDAO();
+		
+		boolean confirmed = dao.confirmPassword(pass, idx);
+		
+		if(confirmed) {
+			if(mode.equals("edit")) { //수정
+ 				
+			}else if(mode.equals("delete")) { //삭제
+				MVCBoardDTO dto = dao.selectView(idx);
+				
+				int result = dao.deletePost(idx);
+				
+				if(result == 1) {
+					
+				}					
+					JSFunction.alertLocation(response, "삭제되었습니다.", "../mvcboard/list.do");
+				
+			}
+		}
+	}
+
+}

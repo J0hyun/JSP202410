@@ -1,0 +1,149 @@
+package mvcboard;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import common.DBConnPool;
+import model1.board.BoardDTO;
+
+public class MVCBoardDAO extends DBConnPool {
+	
+	 public int selectCount(Map<String, Object> map) {
+		 int totalCount = 0;
+		 
+		 String sql = "select count(*) from board";
+		 
+		 //검색 조건
+		 /*
+		  * 예시
+		  * SELECT count(*)
+			FROM board 
+			WHERE title LIKE '%음악%';
+		  */
+		 if(map.get("searchWord") != null) {
+			 sql += " where " + map.get("searchField") +" like '%" + map.get("searchWord") + "%'";
+		 }
+		 
+		 try {
+			 stmt = conn.createStatement();
+			 rs = stmt.executeQuery(sql);
+			 
+			 if(rs.next()) {
+				 totalCount = rs.getInt(1);
+			 }
+			 
+		 }catch(Exception e) {
+			 System.out.println("게시물 수를 구하는 중 예외 발생");
+			 e.printStackTrace();
+		 }
+		 
+		 return totalCount;
+	 }
+	 
+	 
+	 //전체 목록 가져오기
+	 public List<MVCBoardDTO> selectList(Map<String, Object> map){
+		
+		 List<MVCBoardDTO> bbs = new ArrayList<MVCBoardDTO>();
+		 
+		 String query = "select * from board";
+		
+		 if(map.get("searchWord") != null) {
+			 query += " where " + map.get("searchField") + " like '%" + map.get("searchWord") + "%'";
+			 query += " order by num desc";
+		 }
+		 
+		 try {
+			 
+			 pstmt = con.prepareStatement(query);
+			 rs = pstmt.executeQuery();		 
+			 
+			 while(rs.next()) {
+				 BoardDTO dto = new BoardDTO();
+				 
+				 // String num = rs.getString("num");
+				 // dto.setNum(num);
+				 
+				 /*
+				  * 주의!!!!
+				  * 예시...
+				  * rs.getString("visitcount")  <== 이자리 변수명은 board db있는 값을 기입해야한다.
+				  *                  
+				  * BoardDTO 클래스 --> visitCount
+				  * board db  --> visitcount
+				  */
+				 dto.setNum(rs.getString("num"));
+				 dto.setTitle(rs.getString("title"));
+				 dto.setContent(rs.getString("content"));
+				 dto.setPostdate(rs.getDate("postdate"));
+				 dto.setId(rs.getString("id"));
+				 dto.setVisitcount(rs.getString("visitcount"));
+				 
+				 bbs.add(dto);
+			 }
+		 }catch(Exception e) {
+			 System.out.println("게시물 조회 중 예외 발생");
+			 e.printStackTrace();
+		 }
+		 
+		 
+		 return bbs;
+	 }
+	 
+	 
+	 //검색 조건에 맞는 게시물 목록을 반환합니다.(페이징 기능 지원)
+	 public List<MVCBoardDTO> selectListPage(Map<String, Object> map){
+		 List<MVCBoardDTO> bbs = new ArrayList<MVCBoardDTO>();
+		 
+		
+		 String query = "select * from ("
+				 +" select tb.*, rownum as rNum from ("
+				 +" select * from MVCboard";
+		 
+		 //검색조건 추가
+		 if(map.get("SearchWord") != null) {
+			 query += " where " + map.get("searchField")
+			 		+ " like '%" + map.get("searchWord") + "%' ";
+		 }
+		 // 검색 조건 추가
+		 query += " order by num desc) Tb)"
+		       + " where rNum between ? and ?"; 
+		 
+		 try {
+			 pstmt = con.prepareStatement(query);
+			 
+			 //? 맵핑
+			 pstmt.setString(1, map.get("start").toString());
+			 pstmt.setString(2, map.get("end").toString());
+			 
+			 //쿼리문 실행
+			 rs = pstmt.executeQuery();
+			 
+			 while(rs.next()) {
+				 MVCBoardDTO dto = new MVCBoardDTO();
+				 
+				dto.setIdx(rs.getString("idx"));
+				dto.setName(rs.getString("name"));
+				dto.setTitle(rs.getString("title"));
+				dto.setContent(rs.getString("content"));
+				dto.setPostdate(rs.getDate("postdate"));
+				dto.setOfile(rs.getString("ofile"));
+				dto.setSfile(rs.getString("sfile"));
+				dto.setDowncount(rs.getInt("downcount"));
+				dto.setPass(rs.getString("pass"));
+				dto.setVisitcount(rs.getInt("visitcount"));
+				
+				
+				 bbs.add(dto);
+			 }
+			 
+		 }catch(Exception e) {
+			 System.out.println("게시물 조회 중 예외 발생");
+			 e.printStackTrace();
+		 }		 
+		 
+		 return bbs;
+	 }
+}	 
+	

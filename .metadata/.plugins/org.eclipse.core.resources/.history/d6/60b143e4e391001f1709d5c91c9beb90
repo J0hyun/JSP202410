@@ -1,0 +1,26 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+
+<html>
+<head><title>JSTL - forEach 1</title></head>
+<body>
+	<h3>일반 for문 형태의 forEach 태그</h3>
+	<c:forEach begin="1" end="10" step="2" var="i">
+	<p>반복 ${i} </p>
+	</c:forEach>
+	<hr>
+	
+	<h3>varStatus 속성 살펴보기</h3>
+	<c:forEach begin="3" end="5" var="i" varStatus="loop">
+		<tr>
+			<td>count: ${loop.count }</td><br>
+			<td>index: ${loop.index }</td><br>
+			<td>current: ${loop.current }</td><br>
+			<td>first: ${loop.first }</td><br>
+			<td>last: ${loop.last }</td><br>
+		</tr>
+	</c:forEach>
+</body>
+</html>

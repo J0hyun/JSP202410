@@ -1,0 +1,17 @@
+package fileupload;
+
+import java.io.IOException;
+
+import javax.sql.rowset.serial.SerialException;
+
+import jakarta.servlet.http.HttpServletRequest;
+
+public class FileUtil {
+	
+	//파일 업로드
+	public static String uploadFile(HttpServletRequest request, String sDirectory) 
+							throws SerialException, IOException{
+		request.getPart("ofile");
+		return null;
+	}
+}

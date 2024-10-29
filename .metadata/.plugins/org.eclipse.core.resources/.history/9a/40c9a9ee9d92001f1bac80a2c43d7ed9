@@ -1,0 +1,29 @@
+package fileupload;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+@MultipartConfig(
+		maxFileSize = 1024*1024*1,		//파일당 최대 용량 1M
+		maxRequestSize = 1024*1024*10	//전체파일 용량	10M
+		)
+public class UploadProcess extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	
+
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		try {
+			
+		}catch(Exception e) {
+			e.printStackTrace();
+			request.setAttribute("errorMessage", "파일 업로드 오류");
+			request.getRequestDispatcher("FileUploadMain.jsp").forward(request, response);
+		}
+	}
+
+}
